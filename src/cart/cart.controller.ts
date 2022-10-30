@@ -9,6 +9,7 @@ import {
   UseGuards,
   HttpStatus,
 } from '@nestjs/common';
+import { BasicAuthGuard } from 'src/auth';
 
 // import { BasicAuthGuard, JwtAuthGuard } from '../auth';
 import { OrderService } from '../order';
@@ -25,13 +26,14 @@ export class CartController {
   ) {}
 
   // @UseGuards(JwtAuthGuard)
-  // @UseGuards(BasicAuthGuard)
+  @UseGuards(BasicAuthGuard)
   @Get()
   findUserCart(@Req() req: AppRequest) {
+    console.log('getUserIdFromRequest(req): ', getUserIdFromRequest(req));
     const cart = this.cartService.findOrCreateByUserId(
       getUserIdFromRequest(req),
     );
-
+    console.log('cart: ', cart);
     return {
       statusCode: HttpStatus.OK,
       message: 'OK',
@@ -40,7 +42,7 @@ export class CartController {
   }
 
   // @UseGuards(JwtAuthGuard)
-  // @UseGuards(BasicAuthGuard)
+  @UseGuards(BasicAuthGuard)
   @Put()
   updateUserCart(@Req() req: AppRequest, @Body() body) {
     // TODO: validate body payload...
@@ -61,7 +63,7 @@ export class CartController {
   }
 
   // @UseGuards(JwtAuthGuard)
-  // @UseGuards(BasicAuthGuard)
+  @UseGuards(BasicAuthGuard)
   @Delete()
   clearUserCart(@Req() req: AppRequest) {
     this.cartService.removeByUserId(getUserIdFromRequest(req));
@@ -73,7 +75,7 @@ export class CartController {
   }
 
   // @UseGuards(JwtAuthGuard)
-  // @UseGuards(BasicAuthGuard)
+  @UseGuards(BasicAuthGuard)
   @Post('checkout')
   checkout(@Req() req: AppRequest, @Body() body) {
     const userId = getUserIdFromRequest(req);

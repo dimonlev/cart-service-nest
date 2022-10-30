@@ -6,16 +6,14 @@ import {
   UseGuards,
   HttpStatus,
 } from '@nestjs/common';
-import {
-  LocalAuthGuard,
-  AuthService,
-  JwtAuthGuard,
-  BasicAuthGuard,
-} from './auth';
-
+import { AuthService, BasicAuthGuard } from './auth';
+import { UsersService } from './users';
 @Controller()
 export class AppController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private userService: UsersService,
+  ) {}
 
   @Get(['', 'ping'])
   healthCheck(): any {
@@ -28,29 +26,27 @@ export class AppController {
   // @UseGuards(LocalAuthGuard)
   @Post('api/auth/login')
   async login(@Request() req) {
-    console.log('req: ', req);
-    console.log('req.user: ', req.body.user);
     const token = this.authService.login(req.body.user, 'basic');
-    console.log('token: ', token);
-
+    const user = this.userService.createOne(req.body.user);
     return {
       statusCode: HttpStatus.OK,
       message: 'OK',
       data: {
         ...token,
+        user,
       },
     };
   }
 
-  // @UseGuards(BasicAuthGuard)
+  @UseGuards(BasicAuthGuard)
   @Get('api/profile')
   async getProfile(@Request() req) {
-    console.log('req: ', req);
+    const user = this.userService.findOne(req.body.user);
     return {
       statusCode: HttpStatus.OK,
       message: 'OK',
       data: {
-        user: req.body.user,
+        user,
       },
     };
   }
