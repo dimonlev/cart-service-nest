@@ -27,7 +27,9 @@ export class AppController {
   @Post('api/auth/login')
   async login(@Request() req) {
     const token = this.authService.login(req.body.user, 'basic');
-    const user = this.userService.createOne(req.body.user);
+    console.log('token: ', token);
+    const user = await this.userService.createOne(req.body.user);
+    console.log('user: ', user);
     return {
       statusCode: HttpStatus.OK,
       message: 'OK',

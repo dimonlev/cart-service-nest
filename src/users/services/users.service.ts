@@ -42,10 +42,9 @@ export class UsersService {
     await client.connect();
     try {
       const { name, email, password } = user;
-      await client.connect();
       await client.query(`BEGIN`);
       const userToCreate = [name, email, password];
-      console.log(userToCreate);
+      console.log('userToCreate: ', userToCreate);
       const insertUser =
         'INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id';
       const { rows: userData } = await client.query(insertUser, userToCreate);
@@ -53,6 +52,7 @@ export class UsersService {
       const { rows: data } = await client.query(
         `SELECT * FROM users where users.id='${userData[0].id}'`,
       );
+      console.log('data: ', data);
       return data[0];
     } catch (err) {
       throw new Error(err);
