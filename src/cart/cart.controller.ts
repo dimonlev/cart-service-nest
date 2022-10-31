@@ -80,7 +80,7 @@ export class CartController {
   checkout(@Req() req: AppRequest, @Body() body) {
     const userId = getUserIdFromRequest(req);
     const cart = this.cartService.findByUserId(userId);
-
+    console.log('cart checkout: ', cart);
     if (!(cart && cart.items.length)) {
       const statusCode = HttpStatus.BAD_REQUEST;
       req.statusCode = statusCode;

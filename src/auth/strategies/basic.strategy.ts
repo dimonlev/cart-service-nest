@@ -14,13 +14,13 @@ export class BasicStrategy extends PassportStrategy(Strategy) {
 
   async validate(user: User): Promise<any> {
     const userValidated = this.authService.validateUser(user);
-
+    console.log('user: ', user);
     if (!userValidated) {
       throw new UnauthorizedException();
     }
 
     const { password, ...result } = user;
-
+    console.log('result: ', result);
     return result;
   }
 }

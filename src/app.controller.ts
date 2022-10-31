@@ -44,6 +44,7 @@ export class AppController {
   @Get('api/profile')
   async getProfile(@Request() req) {
     const user = this.userService.findOne(req.body.user);
+    console.log('user: ', user);
     return {
       statusCode: HttpStatus.OK,
       message: 'OK',

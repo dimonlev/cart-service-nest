@@ -24,12 +24,12 @@ export class UsersService {
     await client.connect();
 
     try {
-      const { name, email } = user;
+      const { name, password } = user;
       const { rows: data } = await client.query(
-        `SELECT * FROM users WHERE users.name='${name} and users.email=${email}'`,
+        `SELECT * FROM users WHERE users.name='${name} and users.password=${password}'`,
       );
 
-      return data;
+      return data[0];
     } catch (err) {
       throw new Error(err);
     } finally {
