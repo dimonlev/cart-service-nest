@@ -43,3 +43,27 @@ create table orders (
   total integer
   foreign key ("cart_id ") references "carts" ("id")
 )
+
+insert into orders (user_id,cart_id, payment, delivery, comments, status, total) values
+	('e54c1f44-4af3-467b-8ce1-1cab704c6a28', '5b52c812-70cb-4b30-9f8c-aeb8ba2f6244', '{
+  "type": "Visa",
+  "address": "NY",
+  "creditCard": "1234567890123456"
+}', '{
+  "type": "DHL",
+  "address": "Miami"
+}', 'non-contact', 'delivered', 68)
+
+
+select o.id as order_id , o.user_id, o.payment, o.delivery, o."comments" , o.status , o.total , p.id as product_id, p.title, p.price, ci.count  from orders o join users u 
+	on o.user_id = u.id 
+	join carts c 
+	on c.id  = o.cart_id 
+	join cart_items ci 
+	on ci.cart_id = c.id 
+	join stocks s 
+	on ci.product_id = s.product_id 
+	join products p 
+	on p.id = ci.product_id 
+    where o.user_id = `${userId}` 
+      and status = 'delivered'

@@ -57,7 +57,6 @@ export class CartController {
       message: 'OK',
       data: {
         cart,
-        total: calculateCartTotal(cart),
       },
     };
   }

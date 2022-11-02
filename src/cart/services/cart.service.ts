@@ -25,7 +25,6 @@ export class CartService {
   }
 
   createByUserId(userId: string) {
-    console.log('PG_DATABASE: ', PG_DATABASE);
     const id = v4(v4());
     const userCart = {
       id,
@@ -38,7 +37,6 @@ export class CartService {
   }
 
   findOrCreateByUserId(userId: string): Cart {
-    console.log('secret: ', process.env.SECRET);
     const userCart = this.findByUserId(userId);
 
     if (userCart) {

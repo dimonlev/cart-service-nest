@@ -14,37 +14,39 @@ const dbOptions = {
   },
   connectionTimeoutMillis: 5000,
 };
-
+const client = new Client(dbOptions);
+client.connect();
 @Injectable()
 export class UsersService {
-  constructor() {}
+  private readonly users: Record<string, User>;
+  constructor() {
+    this.users = {};
+  }
 
-  async findOne(user: User) {
-    const client = new Client(dbOptions);
-    await client.connect();
+  findOne(userId: string): User {
+    return this.users[userId];
+  }
 
+  async findOneUser(name: string, password: string) {
     try {
-      const { name, password } = user;
       const { rows: data } = await client.query(
         `SELECT * FROM users WHERE users.name='${name} and users.password=${password}'`,
       );
-
+      console.log('findOneUser data[0]: ', data[0]);
       return data[0];
     } catch (err) {
       throw new Error(err);
     } finally {
-      client.end();
+      // client.end();
     }
   }
 
   async createOne(user: User) {
-    const client = new Client(dbOptions);
-    await client.connect();
     try {
       const { name, email, password } = user;
       await client.query(`BEGIN`);
       const userToCreate = [name, email, password];
-      console.log('userToCreate: ', userToCreate);
+      console.log('createOne userToCreate: ', userToCreate);
       const insertUser =
         'INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id';
       const { rows: userData } = await client.query(insertUser, userToCreate);
@@ -52,20 +54,12 @@ export class UsersService {
       const { rows: data } = await client.query(
         `SELECT * FROM users where users.id='${userData[0].id}'`,
       );
-      console.log('data: ', data);
+      console.log('createOne data: ', data);
       return data[0];
     } catch (err) {
       throw new Error(err);
     } finally {
-      client.end();
+      // client.end();
     }
-    // console.log('this.PG_DATABASE: ', process.env.PG_DATABASE);
-    // const createUserQuery = `INSERT into `;
-    // const id = v4(v4());
-    // const newUser = { id: name || id, name, password };
-
-    // this.users[id] = newUser;
-
-    // return newUser;
   }
 }

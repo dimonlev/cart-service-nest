@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/services/users.service';
 import { User } from '../users/models';
-import { contentSecurityPolicy } from 'helmet';
 
 @Injectable()
 export class AuthService {
@@ -11,14 +10,16 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  validateUser(user: User): any {
-    const userFound = this.usersService.findOne(user);
-
-    if (userFound) {
-      return userFound;
+  async validateUser(name: string, password: string) {
+    console.log('validateUser, name: ', name);
+    console.log('validateUser, password: ', password);
+    const user = await this.usersService.findOneUser(name, password);
+    console.log('validateUser, user: ', user);
+    if (user) {
+      return user;
     }
 
-    return this.usersService.createOne(user);
+    return this.usersService.createOne({ name, password });
   }
 
   login(user: User, type) {
@@ -43,8 +44,9 @@ export class AuthService {
 
   loginBasic(user: User) {
     const payload = { username: user.name, sub: user.id };
-    console.log('user: ', user);
-    console.log('payload: ', payload);
+    console.log('loginBasic user: ', user);
+    console.log('loginBasic payload: ', payload);
+    console.log('loginBasic payload user.id: ', user.id);
 
     function encodeUserToken(user) {
       const { id, name, password } = user;

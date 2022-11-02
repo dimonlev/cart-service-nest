@@ -26,10 +26,10 @@ export class AppController {
   // @UseGuards(LocalAuthGuard)
   @Post('api/auth/login')
   async login(@Request() req) {
-    const token = this.authService.login(req.body.user, 'basic');
-    console.log('token: ', token);
+    const token = await this.authService.login(req.body.user, 'basic');
+    console.log('login token: ', token);
     const user = await this.userService.createOne(req.body.user);
-    console.log('user: ', user);
+    console.log('login user: ', user);
     return {
       statusCode: HttpStatus.OK,
       message: 'OK',
@@ -43,13 +43,13 @@ export class AppController {
   @UseGuards(BasicAuthGuard)
   @Get('api/profile')
   async getProfile(@Request() req) {
-    const user = this.userService.findOne(req.body.user);
-    console.log('user: ', user);
+    console.log('getProfile req: ', req);
+    console.log('getProfile req.user: ', req.user);
     return {
       statusCode: HttpStatus.OK,
       message: 'OK',
       data: {
-        user,
+        user: req.user,
       },
     };
   }
