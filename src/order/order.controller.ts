@@ -17,7 +17,7 @@ import { OrderService } from './services';
 export class OrderController {
   constructor(private orderService: OrderService) {}
 
-  @UseGuards(BasicAuthGuard)
+  // @UseGuards(BasicAuthGuard)
   @Get()
   async findUserOrder(@Req() req: AppRequest) {
     console.log('findUserOrder(req): ', req);
@@ -29,7 +29,7 @@ export class OrderController {
     };
   }
 
-  @UseGuards(BasicAuthGuard)
+  // @UseGuards(BasicAuthGuard)
   @Put()
   async updateUserOrder(@Req() req: AppRequest, @Body() body) {
     // TODO: validate body payload...
